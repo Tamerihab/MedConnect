@@ -104,5 +104,23 @@ public class User {
                 ", isVolunteer=" + isVolunteer +
                 '}';
     }
+
+    public void addVolunteerRole() {
+        if (!this.isVolunteer) {
+            this.isVolunteer = true;
+            System.out.println("Volunteer role added successfully.");
+        } else {
+            System.out.println("User is already a volunteer.");
+        }
+    }
+
+    public void removeVolunteerRole() {
+        if (this.isVolunteer) {
+            this.isVolunteer = false;
+            System.out.println("Volunteer role removed successfully.");
+        } else {
+            System.out.println("User is not currently a volunteer.");
+        }
+    }
 }
 
