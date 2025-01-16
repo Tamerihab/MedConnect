@@ -1,17 +1,16 @@
 package com.med.MedConnect.services.strategy.search;
 
 class SearchProcessor {
-    private SearchStrategy strategy;
+    private SearchStrategy searchStrategy;
 
-    public void setStrategy(SearchStrategy strategy) {
-        this.strategy = strategy;
+    public void setSearchStrategy(SearchStrategy searchStrategy) {
+        this.searchStrategy = searchStrategy;
     }
 
-    public void processSearch(String searchQuery) {
-        if (strategy == null) {
-            System.out.println("No search strategy selected.");
-        } else {
-            strategy.search(searchQuery);
+    public void executeSearch(String searchQuery) {
+        if (searchStrategy == null) {
+            throw new IllegalStateException("Search strategy not set!");
         }
+        searchStrategy.search(searchQuery);
     }
 }
