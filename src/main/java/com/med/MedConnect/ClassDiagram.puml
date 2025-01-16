@@ -17,12 +17,6 @@ skinparam linetype ortho
 
 package "Model" {
 
-    interface CRUD {
-        +create()
-        +read()
-        +update()
-        +delete()
-    }
 
     interface IAccountManager {
         +login(email: String, password: String): boolean
@@ -31,7 +25,7 @@ package "Model" {
         +deleteAccount() : boolean
     }
 
-    class User implements CRUD, IAccountManager {
+    class User implements IAccountManager {
         -id: int
         -name: String
         -email: String
@@ -50,7 +44,7 @@ package "Model" {
         +getResponsibilities()
     }
 
-    class BasicVolunteerRole implements CRUD, VolunteerRole {
+    class BasicVolunteerRole implements VolunteerRole {
         -volunteerID: int
         -eventID: int
         -hours: int
@@ -104,7 +98,7 @@ package "Model" {
         +getDetails()
     }
 
-    class Event implements CRUD {
+    class Event{
         -eventID: int
         -name: String
         -date: date
@@ -139,7 +133,7 @@ package "Model" {
         +getDetails()
     }
 
-    class CompositeItem implements ItemComponent, CRUD {
+    class CompositeItem implements ItemComponent {
         -itemID: int
         -name: String
         -description: String
