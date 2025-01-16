@@ -1,27 +1,515 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
+left to right direction
 
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
 
-class ArrayList {
-Object[] elementData
-size()
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam lineThickness 2
+skinparam defaultFontName Arial
+skinparam nodeMargin 30
+skinparam componentStyle rectangle
+skinparam linetype ortho
+
+
+
+package "Model" {
+
+    interface CRUD {
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+
+    interface IAccountManager {
+        +login(email: String, password: String): boolean
+        +createAccount(name: String, email: String, nationalId: String, password: String): boolean
+        +updateProfile(name: String, email: String, nationalId: String, password: String): boolean
+        +deleteAccount() : boolean
+    }
+
+    class User implements CRUD, IAccountManager {
+        -id: int
+        -name: String
+        -email: String
+        -nationalId: String
+        -password: String
+        -isVolunteer: boolean = false
+        -isDeleted: boolean = false
+        -volunteer: VolunteerRole
+        +addVolunteerRole(volunteer: VolunteerRole)
+        +removeVolunteerRole()
+    }
+
+    interface VolunteerRole {
+        +performDuties()
+        +getResponsibilities()
+    }
+
+    class BasicVolunteerRole implements CRUD, VolunteerRole {
+        -volunteerID: int
+        -eventID: int
+        -hours: int
+        -skills: List<String>
+        +signUpForEvent(Event :event)
+        +performDuties()
+        +getResponsibilities()
+    }
+
+    class HospitalAdmin implements IAccountManager {
+        -hospitalID: int
+        -hospitalName: String
+        -adminID: int
+        -address: Address
+        +uploadRequiredItems(items: List<CompositeItem>)
+        +manageItems(item: CompositeItem, action: String)
+        +searchDonations(criteria: Map<String, String>): List<Donation>
+        +filterDonations(filters: Map<String, String>): List<Donation>
+    }
+
+    class Address {
+        -address_id: int
+        -name: String
+        -parent_id: int
+    }
+
+    class DonationService {
+        +trackDonationHistory(userId: int): List<Donation>
+        +trackDonationStatus(donationId: int): String
+        +fillDonationForm(donationDetails: Donation): boolean
+        +choosePickUpOrDropOff(donationId: int, location: Address): boolean
+    }
+
+    class Donation {
+        -id: int
+        -type: String
+        -description: String
+        -quantity: int
+        -state: DonationState
+        -userId: int
+        -address: Address
+        +setState(state: DonationState)
+        +process()
+    }
+
+    class DonationDetails {
+        -donationDetailsID: int
+        -type: string
+        -itemID: int
+        -quantity: int
+        -unitPrice: float
+        +getDetails()
+    }
+
+    class Event implements CRUD {
+        -eventID: int
+        -name: String
+        -date: date
+        -location: String
+        -description: String
+        -volunteerList: List<VolunteerRole>
+    }
+
+    class EventDetails {
+        -eventDetailsID: int
+        -volunteerID: int
+        -attendance: String
+        -totalHours: int
+    }
+
+    class Payment {
+        -paymentID: int
+        -type: Type
+        -amount: int
+    }
+
+    class PaymentDetails {
+        -paymentDetailsID: int
+        -paymentID: int
+        -donationID: int
+        -amount: int
+        -paymentDate: date
+    }
+
+    interface ItemComponent {
+        +getChild()
+        +getDetails()
+    }
+
+    class CompositeItem implements ItemComponent, CRUD {
+        -itemID: int
+        -name: String
+        -description: String
+        -quantity: int
+        -unitPrice: float
+        -childItems: List<ItemComponent>
+        +addChild(child: ItemComponent)
+        +removeChild(child: ItemComponent)
+        +getChild(index: int): ItemComponent
+        +getDetails()
+    }
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+package "View" {}
+
+package "Controller" {
+    class AdminController {
+        + executeDashboardOperations(): void
+    }
+
+    class DonationController {
+        + manageDonation(donationId: int): void
+    }
+
+    class EventController {
+        + handleEvent(eventId: int): void
+    }
 }
+
+package "Services" {
+
+    abstract class VolunteerRoleDecorator{
+        -decoratedVolunteer: VolunteerRole
+        +performDuties()
+        +getResponsibilities()
+    }
+
+    class EventCoordinatorVolunteerRoleDecorator extends VolunteerRoleDecorator {
+        +performDuties()
+        +getResponsibilities()
+    }
+
+    class EmergencyResponderVolunteerRoleDecorator extends VolunteerRoleDecorator {
+        +performDuties()
+        +getResponsibilities()
+    }
+
+    class FundrasierVolunteerRoleDecorator extends VolunteerRoleDecorator {
+        +performDuties()
+        +getResponsibilities()
+    }
+
+    interface DonationState {
+        + handle(donation: Donation)
+    }
+
+    class PendingState {
+        + handle(donation: Donation)
+    }
+    class ApprovedState {
+        + handle(donation: Donation)
+    }
+    class RejectedState {
+        + handle(donation: Donation)
+    }
+
+    interface DonationManager {
+        + approveDonation(donationId: int)
+        + rejectDonation(donationId: int)
+    }
+
+    class DonationManagerImpl implements DonationManager {
+        + approveDonation(donationId: int)
+        + rejectDonation(donationId: int)
+    }
+
+    class ProtectiveProxyDonationManager implements DonationManager {
+        -realSubject: DonationManagerImpl
+        +approveDonation(donationId: int)
+        +rejectDonation(donationId: int)
+        +checkAccess(userRole: String): boolean
+    }
+
+    class Client {
+
+    }
+
+    interface DonationFacade {
+        + validateDonation(donationId: int): boolean
+        + logDonation(donationId: int): void
+        + sendNotification(donationId: int): void
+    }
+
+    class DonationValidation implements DonationFacade {
+        + validate(donationId: int): boolean
+    }
+
+    class DonationLogger implements DonationFacade{
+        + logDonation(donationId: int): void
+        + logCancellation(donationId: int): void
+    }
+
+    class DonationNotification implements DonationFacade{
+            + sendNotification(donationId: int): void
+        }
+
+    interface AdminDashboardFacade {
+        + manageDonations()
+        + manageEvents()
+        + manageUsers()
+        + manageNotifications()
+    }
+
+    class DonationManagement implements AdminDashboardFacade {
+        + processDonation(donationId: int): void
+    }
+
+    class EventManagement implements AdminDashboardFacade {
+        + createEvent(eventId: int): void
+    }
+
+    class UserManagement implements AdminDashboardFacade {
+        + manageUser(userId: int): void
+    }
+
+    class NotificationManagement implements AdminDashboardFacade {
+        + sendAdminNotification(message: String): void
+    }
+
+    interface EventManagementFacade {
+        + createEvent(eventId: int): void
+        + updateEvent(eventId: int): void
+        + notifyUsers(eventId: int): void
+    }
+
+    class EventCreationService implements EventManagementFacade {
+        + create(eventId: int): void
+    }
+
+    class EventNotificationService implements EventManagementFacade {
+        + notify(eventId: int): void
+    }
+
+    class EventUpdateService implements EventManagementFacade  {
+        + update(eventId: int): void
+    }
+
+    interface MoneyDonationStrategy {
+        +pay(moneydonationDetails)
+    }
+
+    class CreditCardMoneyDonation implements MoneyDonationStrategy {
+        +pay(moneydonationDetails)
+    }
+
+    class DebitCardMoneyDonation implements MoneyDonationStrategy {
+        +pay(moneydonationDetails)
+    }
+
+    class PaypalMoneyDonation implements MoneyDonationStrategy {
+        +pay(moneydonationDetails)
+    }
+
+    class CashDonation implements MoneyDonationStrategy {
+        +pay(moneydonationDetails)
+    }
+
+    interface Subject {
+        +subscribe(observer: Observer)
+        +unsubscribe(observer: Observer)
+        +notifySubscribers(notificationType: String, message: String)
+    }
+
+    interface Observer {
+        +update(notificationType: String, message: String)
+    }
+
+    class EmailNotification implements Observer {
+        -status: String
+        +update(notificationType: String, message: String)
+    }
+
+    class InAppNotification implements Observer {
+        -status: String
+        +update(notificationType: String, message: String)
+    }
+
+    class SMSNotification implements Observer {
+        -status: String
+        +update(notificationType: String, message: String)
+    }
+
+    class NotificationSubject implements Subject {
+        -subscribers: List<Observer>
+        -state: String
+        +subscribe(observer: Observer)
+        +unsubscribe(observer: Observer)
+        +notifySubscribers(notificationType: String, message: String)
+    }
+
+    interface FilterStrategy {
+        +filter(searchQuery)
+    }
+
+    class FilterByRecentGroup implements FilterStrategy {
+        +filter(searchQuery)
+    }
+
+    class FilterByItemTypeGroup implements FilterStrategy {
+        +filter(searchQuery)
+    }
+
+    class FilterByHospitalGroup implements FilterStrategy {
+        +filter(searchQuery)
+    }
+
+    class FilterByUrgencyGroup implements FilterStrategy {
+        +filter(searchQuery)
+    }
+
+    interface SearchStrategy {
+        +search(searchQuery)
+    }
+
+    class SearchByMedicine implements SearchStrategy {
+        +search(searchQuery)
+    }
+
+    class SearchByHospital implements SearchStrategy {
+        +search(searchQuery)
+    }
+
+    class SearchByEquipment implements SearchStrategy {
+        +search(searchQuery)
+    }
+
+    interface LoginStrategy {
+        +login(userCredentials)
+    }
+
+    class EmailLogin implements LoginStrategy {
+        +login(userCredentials)
+    }
+
+    class GoogleLogin implements LoginStrategy {
+        +login(userCredentials)
+    }
+
+    class FacebookLogin implements LoginStrategy {
+        +login(userCredentials)
+    }
+
+    interface NotificationSender {
+        + sendNotification(message: String, recipient: String)
+    }
+
+    class EmailNotificationAdapter {
+        -emailAPI: EmailAPI
+        +sendNotification(message: String, recipient: String)
+    }
+    class SMSNotificationAdapter {
+        -smsAPI: SMSAPI
+        +sendNotification(message: String, recipient: String)
+    }
+    class InAppNotificationAdapter {
+        -inAppSystem: InAppNotificationSystem
+        +sendNotification(message: String, recipient: String)
+    }
+
+    class EmailAPI {
+        +sendEmail(to: String, content: String)
+    }
+    class SMSAPI {
+        +sendSMS(phoneNumber: String, text: String)
+    }
+    class InAppNotificationSystem {
+        +pushNotification(userId: String, message: String)
+    }
+
+    class Client {
+        +sendNotificationVia(sender: NotificationSender, message: String, recipient: String)
+    }
+
+    abstract class EventScheduler {
+        -scheduleEvent(): void
+        +validateEventDetails(): void
+        +assignLocation(): void
+        +notifyParticipants(): void
+    }
+
+    class PublicEventScheduler {
+        +validateEventDetails(): void
+        +notifyParticipants(): void
+    }
+
+    class PrivateEventScheduler {
+        +validateEventDetails(): void
+        +notifyParticipants(): void
+    }
+
+    class RecurringEventScheduler {
+        +validateEventDetails(): void
+        +notifyParticipants(): void
+    }
+
+
+}
+
+
+' Model to Model Relationships
+User -->  BasicVolunteerRole : "0..1"
+User --> Address : has
+User -- Donation : Makes
+User *-- Payment : makes
+User -- DonationService : Uses
+BasicVolunteerRole -- Event : "0..*"
+HospitalAdmin -- Address : has
+Address "0..*" --> "1" Address : Parent
+DonationService ..> Donation : Manages
+Donation --> Address
+Donation *-- DonationDetails : has
+Event *-- EventDetails : has
+Payment *-- PaymentDetails : has
+
+
+' Model to Controller Relationships
+
+
+' Model to service Relationships
+Donation o--> DonationState : uses
+VolunteerRoleDecorator o--left-> VolunteerRole
+
+
+
+' Controller to Service Relationships
+AdminController --> AdminDashboardFacade
+EventController --> EventManagementFacade
+DonationController --> DonationFacade
+
+' Controller to View Relationships
+
+
+' Service to Service Relationships
+DonationState <|.. PendingState
+DonationState <|.. ApprovedState
+DonationState <|.. RejectedState
+Client --> DonationManager
+ProtectiveProxyDonationManager o--left-> DonationManagerImpl
+DonationController --> DonationFacade
+Subject -right->"Observes" Observer : "1..*"
+NotificationSubject <-down- "subject" EmailNotification
+NotificationSubject <-left- "subject" InAppNotification
+NotificationSubject <-left- "subject" SMSNotification
+NotificationSender <|... EmailNotificationAdapter
+NotificationSender <|... SMSNotificationAdapter
+NotificationSender <|... InAppNotificationAdapter
+EmailNotificationAdapter --> EmailAPI : uses
+SMSNotificationAdapter --> SMSAPI : uses
+InAppNotificationAdapter --> InAppNotificationSystem : uses
+Client --> NotificationSender : interacts
+EventScheduler <|-- PublicEventScheduler
+EventScheduler <|-- PrivateEventScheduler
+EventScheduler <|-- RecurringEventScheduler
+InAppNotification --> NotificationSender : sends
+SMSNotification --> NotificationSender : sends
+EmailNotification --> NotificationSender : sends
+
+
+}
+
 
 @enduml
+
