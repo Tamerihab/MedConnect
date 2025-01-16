@@ -1,5 +1,7 @@
 package com.med.MedConnect.Controller;
 
+import com.med.MedConnect.Model.AddressRepo;
+import com.med.MedConnect.Model.Address;
 import com.med.MedConnect.Model.User.User;
 import com.med.MedConnect.Model.User.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,30 @@ public class UserController {
 
     @Autowired
     private UserRepo userRepository;
+    
+    @Autowired
+    private AddressRepo addressRepository;
+    
 
+
+    @GetMapping("/cities")
+    @ResponseBody
+    public List<Address> getCitiesByCountry(@RequestParam("countryId") int countryId) {
+        List<Address> cities = addressRepository.findByParent_addressId(countryId); // Fetch cities using parent_id (countryId)
+        return cities;
+    }
+
+    
     @GetMapping("/add")
     public String showAddUserForm(Model model) {
+        // Fetch countries (parentId = null or 0)
+        List<Address> countries = addressRepository.findByParentIsNull();
         model.addAttribute("user", new User()); // Create a new User object to bind to the form
-        return "addUser"; // The name of the Thymeleaf view (addUser.html)
+        model.addAttribute("countries", countries); // Add countries for selection
+        return "addUser"; // The Thymeleaf view name (addUser.html)
     }
+
+
 
     // Get all users and render view (JSP or Thymeleaf)
     @GetMapping
@@ -43,10 +63,18 @@ public class UserController {
 
     // Create a new user and redirect to the list of users
     @PostMapping
-    public String createUser(@ModelAttribute User user) {
-        userRepository.save(user);
-        return "redirect:/users"; // Redirect to the list of users after creating a new user
+    public String createUser(@ModelAttribute User user, @RequestParam("city") int cityId) {
+        // Fetch the Address (City) based on the selected cityId
+        Address selectedAddress = addressRepository.findById(cityId).orElse(null);
+        
+        if (selectedAddress != null) {
+            user.setAddress(selectedAddress);  // Set the selected city (Address) to the user
+        }
+    
+        userRepository.save(user);  // Save the user to the database
+        return "redirect:/users";  // Redirect to the user list page after creation
     }
+    
 
     // Update an existing user and return the updated user view
     @PutMapping("/{id}")
