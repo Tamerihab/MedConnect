@@ -1,4 +1,6 @@
 package com.med.MedConnect.Model.User;
+import com.med.MedConnect.Model.Address;
+
 
 import jakarta.persistence.*;
 
@@ -22,6 +24,10 @@ public class User {
     @Column
     private boolean isVolunteer;
 
+    @ManyToOne  
+    @JoinColumn(name = "address_id")  
+    private Address address;
+
     // Default constructor
     public User() {
     }
@@ -34,6 +40,15 @@ public class User {
         this.email = email;
         this.password = password;
         this.isVolunteer = isVolunteer;
+        this.address = address;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     // Getters and setters
@@ -102,7 +117,7 @@ public class User {
                 ", nationalID='" + nationalID + '\'' +
                 ", email='" + email + '\'' +
                 ", isVolunteer=" + isVolunteer +
+                ", address=" + address + 
                 '}';
     }
 }
-
