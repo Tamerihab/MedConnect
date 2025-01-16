@@ -37,6 +37,7 @@ package "Model" {
         -email: String
         -nationalId: String
         -password: String
+        -address: Address
         -isVolunteer: boolean = false
         -isDeleted: boolean = false
         -volunteer: VolunteerRole
@@ -90,7 +91,6 @@ package "Model" {
         -quantity: int
         -state: DonationState
         -userId: int
-        -address: Address
         +setState(state: DonationState)
         +process()
     }
@@ -223,9 +223,6 @@ package "Services" {
         +checkAccess(userRole: String): boolean
     }
 
-    class Client {
-
-    }
 
     interface DonationFacade {
         + validateDonation(donationId: int): boolean
@@ -419,9 +416,6 @@ package "Services" {
         +pushNotification(userId: String, message: String)
     }
 
-    class Client {
-        +sendNotificationVia(sender: NotificationSender, message: String, recipient: String)
-    }
 
     abstract class EventScheduler {
         -scheduleEvent(): void
@@ -486,7 +480,7 @@ DonationController --> DonationFacade
 DonationState <|.. PendingState
 DonationState <|.. ApprovedState
 DonationState <|.. RejectedState
-Client --> DonationManager
+DonationAdmin --> DonationManager
 ProtectiveProxyDonationManager o--left-> DonationManagerImpl
 DonationController --> DonationFacade
 Subject -right->"Observes" Observer : "1..*"
@@ -499,7 +493,6 @@ NotificationSender <|... InAppNotificationAdapter
 EmailNotificationAdapter --> EmailAPI : uses
 SMSNotificationAdapter --> SMSAPI : uses
 InAppNotificationAdapter --> InAppNotificationSystem : uses
-Client --> NotificationSender : interacts
 EventScheduler <|-- PublicEventScheduler
 EventScheduler <|-- PrivateEventScheduler
 EventScheduler <|-- RecurringEventScheduler
