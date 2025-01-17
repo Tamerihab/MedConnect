@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @Controller
@@ -16,41 +18,34 @@ public class UserController {
     @Autowired
     private UserRepo userRepository;
 
-    @GetMapping("/add")
-    public String showAddUserForm(Model model) {
-        model.addAttribute("user", new User()); // Create a new User object to bind to the form
-        return "addUser"; // The name of the Thymeleaf view (addUser.html)
-    }
-
-    // Get all users and render view (JSP or Thymeleaf)
     @GetMapping
     public String getAllUsers(Model model) {
         List<User> users = userRepository.findAll();
-        model.addAttribute("users", users); // Add the list to the model
-        return "userList"; // Return the view name (e.g., userList.html or userList.jsp)
+        model.addAttribute("users", users);
+        return "userList"; // A view name that displays all users
     }
 
-    // Get a user by ID and render the user details view
-    @GetMapping("/{id}")
-    public String getUserById(@PathVariable int id, Model model) {
-        User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            model.addAttribute("user", user); // Add the user to the model
-            return "userDetails"; // View for user details
-        }
-        return "error"; // View for error if user not found
+    @GetMapping("/add")
+    public String showAddUserForm(Model model) {
+        model.addAttribute("user", new User());
+        return "addUser"; // View for adding a new user
     }
 
-    // Create a new user and redirect to the list of users
     @PostMapping
     public String createUser(@ModelAttribute User user) {
         userRepository.save(user);
-        return "redirect:/users"; // Redirect to the list of users after creating a new user
+        return "redirect:/users"; // Redirect to the user list after successful creation
     }
 
-    // Update an existing user and return the updated user view
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable int id) {
+        return userRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    }
+
     @PutMapping("/{id}")
-    public String updateUser(@PathVariable int id, @ModelAttribute User userDetails, Model model) {
+    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User userDetails) {
         return userRepository.findById(id).map(user -> {
             user.setFirstName(userDetails.getFirstName());
             user.setLastName(userDetails.getLastName());
@@ -58,18 +53,16 @@ public class UserController {
             user.setEmail(userDetails.getEmail());
             user.setPassword(userDetails.getPassword());
             user.setVolunteer(userDetails.isVolunteer());
-            userRepository.save(user);
-            model.addAttribute("user", user); // Add the updated user to the model
-            return "userDetails"; // Return the updated user details view
-        }).orElse("error"); // If user not found, return error page
+            User updatedUser = userRepository.save(user);
+            return ResponseEntity.ok(updatedUser);
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    // Delete a user and redirect to the list of users
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         return userRepository.findById(id).map(user -> {
             userRepository.delete(user);
-            return "redirect:/users"; // Redirect to the list of users after deletion
-        }).orElse("error"); // If user not found, return error page
+            return ResponseEntity.noContent().<Void>build();  // Specify the response type as Void
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 }
