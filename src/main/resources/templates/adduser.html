@@ -5,24 +5,36 @@
 </head>
 <body>
 <h1>Add New User</h1>
-<form th:action="@{/api/users}" method="post" th:object="${user}">
+<form th:action="@{/users}" method="post" th:object="${user}">
+    <!-- Add validation error messages -->
+    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+        <ul>
+            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+        </ul>
+    </div>
+
     <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required/><br/><br/>
+    <input type="text" id="firstName" th:field="*{firstName}" required/>
+    <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span><br/><br/>
 
     <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required/><br/><br/>
+    <input type="text" id="lastName" th:field="*{lastName}" required/>
+    <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span><br/><br/>
 
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" th:field="*{email}" required/><br/><br/>
+    <input type="email" id="email" th:field="*{email}" required/>
+    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span><br/><br/>
 
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password" th:field="*{password}" required/><br/><br/>
+    <input type="password" id="password" th:field="*{password}" required/>
+    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span><br/><br/>
 
     <label for="nationalID">National ID:</label>
-    <input type="text" id="nationalID" name="nationalID" th:field="*{nationalID}" required/><br/><br/>
+    <input type="text" id="nationalID" th:field="*{nationalID}" required/>
+    <span th:if="${#fields.hasErrors('nationalID')}" th:errors="*{nationalID}"></span><br/><br/>
 
     <label for="volunteer">Volunteer:</label>
-    <input type="checkbox" id="volunteer" name="volunteer" th:field="*{volunteer}"/><br/><br/>
+    <input type="checkbox" id="volunteer" th:field="*{volunteer}"/><br/><br/>
 
     <button type="submit">Add User</button>
 </form>
