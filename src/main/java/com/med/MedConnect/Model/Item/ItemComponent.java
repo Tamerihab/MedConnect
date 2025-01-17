@@ -3,15 +3,10 @@ package com.med.MedConnect.Model.Item;
 import java.util.Iterator;
 
 public interface ItemComponent {
-    void getDetails();
+    public void addChild(ItemComponent itemComponent);
+    public void removeChild(ItemComponent itemComponent);
+    public ItemComponent getChild(int i);
 
-    void add(ItemComponent itemComponent); // Composite operation
-    void remove(ItemComponent itemComponent); // Composite operation
-    ItemComponent getChild(int index); // Composite operation
-
-    int getQuantity(); // Leaf operation
-    String getName(); // Leaf operation
-    String getDescription(); // Leaf operation
-
-    Iterator<ItemComponent> createIterator(); // Iterator operation
+    public abstract Iterator<ItemComponent> createIterator();
+    public void getDetails();
 }

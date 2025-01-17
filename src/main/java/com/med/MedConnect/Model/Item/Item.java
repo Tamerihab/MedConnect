@@ -1,72 +1,86 @@
 package com.med.MedConnect.Model.Item;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-@Entity // Mark as a database entity
-@Table(name = "items") // Table name in the database
-public class Item {
+import java.util.Iterator;
+
+//import com.fasterxml.jackson.annotation.JsonSubTypes;
+//import com.fasterxml.jackson.annotation.JsonTypeInfo;
+//
+//@JsonTypeInfo(
+//        use = JsonTypeInfo.Id.NAME,
+//        include = JsonTypeInfo.As.PROPERTY,
+//        property = "type"
+//)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = Medicine.class, name = "medicine"),
+//        @JsonSubTypes.Type(value = Equipment.class, name = "equipment")
+//})
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Item implements ItemComponent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-generate primary key
-    private int itemID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-    @Column(name = "name", nullable = false) // Map to a column with a non-null constraint
+    @Column
     private String name;
 
-    @Column(name = "description", length = 500) // Map to a column with a max length
+    @Column
     private String description;
 
-    @Column(name = "quantity", nullable = false) // Map to a column with a non-null constraint
-    private int quantity;
+    @Column
+    private double price;
 
-    // Constructor
-    public Item() {}
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ItemType type;
 
-    public Item(int itemID, String name, String description, int quantity) {
-        this.itemID = itemID;
+    public Item() {
+    }
+
+    public Item(String name, String description, double price, ItemType type) {
         this.name = name;
         this.description = description;
-        this.quantity = quantity;
-    }
-
-    // Getters and Setters
-    public int getItemID() {
-        return itemID;
-    }
-
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
+        this.price = price;
+        this.type = type;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public double getPrice() {
+        return price;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public ItemType getType() {
+        return type;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void addChild(ItemComponent itemComponent) {
+        throw new UnsupportedOperationException("This operation is not supported for Leaf objects");
     }
 
-    // Utility method to print details
-    public void getDetails() {
-        System.out.println("Item: " + name + ", Description: " + description + ", Quantity: " + quantity);
+    public void removeChild(ItemComponent itemComponent) {
+        throw new UnsupportedOperationException("This operation is not supported for Leaf objects");
     }
+
+    @Override
+    public ItemComponent getChild(int i) {
+        throw new UnsupportedOperationException("This operation is not supported for Leaf objects");
+    }
+
+    public Iterator<ItemComponent> createIterator() {
+        return new NullIterator();
+    }
+
+    @Override
+    public abstract void getDetails();
 }

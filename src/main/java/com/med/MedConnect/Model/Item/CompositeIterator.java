@@ -1,18 +1,27 @@
 package com.med.MedConnect.Model.Item;
 
-import java.util.Iterator;
-import java.util.Stack;
+import java.util.*;
 
 public class CompositeIterator implements Iterator<ItemComponent> {
-    private Stack<Iterator<ItemComponent>> stack = new Stack<>();
+    Stack<Iterator<ItemComponent>> stack = new Stack<Iterator<ItemComponent>>();
 
     public CompositeIterator(Iterator<ItemComponent> iterator) {
         stack.push(iterator);
     }
 
-    @Override
+    public ItemComponent next() {
+        if (hasNext()) {
+            Iterator<ItemComponent> iterator = stack.peek();
+            ItemComponent component = iterator.next();
+            stack.push(component.createIterator());
+            return component;
+        } else {
+            return null;
+        }
+    }
+
     public boolean hasNext() {
-        if (stack.isEmpty()) {
+        if (stack.empty()) {
             return false;
         } else {
             Iterator<ItemComponent> iterator = stack.peek();
@@ -24,18 +33,5 @@ public class CompositeIterator implements Iterator<ItemComponent> {
             }
         }
     }
-
-    @Override
-    public ItemComponent next() {
-        if (hasNext()) {
-            Iterator<ItemComponent> iterator = stack.peek();
-            ItemComponent component = iterator.next();
-            if (component instanceof Item) {
-                stack.push(component.createIterator());
-            }
-            return component;
-        } else {
-            return null;
-        }
-    }
 }
+
