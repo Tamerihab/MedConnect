@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.Iterator;
 
+import com.med.MedConnect.Model.Donation.Donation;
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Item implements ItemComponent {
@@ -18,8 +20,8 @@ public abstract class Item implements ItemComponent {
     @Column
     private String description;
 
-//    @Column
-//    private double price;
+    @Column
+    private int quantity;
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -28,11 +30,23 @@ public abstract class Item implements ItemComponent {
     public Item() {
     }
 
-    public Item(String name, String description, ItemType type) {
+    @ManyToOne
+    @JoinColumn(name = "donation_id")  // Foreign key to Donation table
+    private Donation donation;  
+
+    public Item(String name, String description, ItemType type, int quantity) {
         this.name = name;
         this.description = description;
-       // this.price = price;
+        this.quantity = quantity;
         this.type = type;
+    }
+
+    public Donation getDonation() {
+        return donation;
+    }
+
+    public void setDonation(Donation donation) {
+        this.donation = donation;
     }
 
     public String getName() {
@@ -43,9 +57,9 @@ public abstract class Item implements ItemComponent {
         return description;
     }
 
-//    public double getPrice() {
-//        return price;
-//    }
+    public double getQuantity() {
+        return quantity;
+    }
 
     public ItemType getType() {
         return type;
