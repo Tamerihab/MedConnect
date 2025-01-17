@@ -161,6 +161,44 @@ package "Controller" {
     class EventController {
         + handleEvent(eventId: int): void
     }
+
+    class UserController {
+        + getAllUsers()
+        + showAddUserForm()
+        + createUser(User user, int cityID): String
+        + showEditForm(int id): String
+        + updateUser(int id, User user): String
+        + deleteUser(int id): String
+        +getCitiesByCountry(int countryID): List<Address>
+    }
+
+    class NotificationController {
+        + sendNotification(Map<String, Object> notificationDetails)
+        + getUserNotifications(userId: int): List<Notification>
+        + getNotification(notificationId: int): Notification
+        + deleteNotification(notificationId: int)
+    }
+
+    class LoginController {
+        + login(User loginUser): String
+    }
+
+    class SearchController {
+        + searchMedicine(searchQuery: String): void
+        + searchEquipment(searchQuery: String): void
+    }
+
+    class VolunteerController {
+        + addVolunteerRole(int userId, VolunteerRole volunteerRole)
+        + updateVolunteerSpecialization(int userId, List<String> specialization)
+        + removeVolunteerRole(int userId)
+    }
+
+    class ItemController {
+        + getAllItems(): Item
+        + saveMedical(Medicine medicine): Medicine
+        + saveEquipment(Equipment equipment): Equipment
+    }
 }
 
 package "Services" {
@@ -466,6 +504,11 @@ VolunteerRoleDecorator o--left-> VolunteerRole
 AdminController --> AdminDashboardFacade
 EventController --> EventManagementFacade
 DonationController --> DonationFacade
+NotificationController --> NotificationSubject
+NotificationController --> Notification
+VolunteerController --> BasicVolunteerRole
+VolunteerController --> User
+
 
 ' Controller to View Relationships
 

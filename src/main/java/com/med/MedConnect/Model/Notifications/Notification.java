@@ -16,24 +16,35 @@ public class Notification {
     @Column
     private String message;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "user_id", referencedColumnName = "userID")
-    private User user;
+    @Column(name = "userid")
+    private int userId;  // Changed to store user ID directly
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
 
-    // Default constructor required by JPA
-    public Notification() {}
-
-    public Notification(String type, String message) {
-        this.type = type;
-        this.message = message;
+    // Default constructor
+    public Notification() {
         this.createdAt = new Date();
     }
 
-    // Getters and setters
+    // Updated constructor
+    public Notification(String type, String message, int userId) {
+        this.type = type;
+        this.message = message;
+        this.userId = userId;
+        this.createdAt = new Date();
+    }
+
+    // Update getters and setters
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public int getId() { return notificationID; }
     public void setId(int id) { this.notificationID = id; }
 
@@ -42,9 +53,6 @@ public class Notification {
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
