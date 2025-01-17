@@ -7,7 +7,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userID;
 
     @Column
     private String firstName;
@@ -38,11 +38,11 @@ public class User {
 
     // Getters and setters
     public int getId() {
-        return id;
+        return userID;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.userID = id;
     }
 
     public String getFirstName() {
@@ -96,13 +96,31 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + userID +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", nationalID='" + nationalID + '\'' +
                 ", email='" + email + '\'' +
                 ", isVolunteer=" + isVolunteer +
                 '}';
+    }
+
+    public void addVolunteerRole() {
+        if (!this.isVolunteer) {
+            this.isVolunteer = true;
+            System.out.println("Volunteer role added successfully.");
+        } else {
+            System.out.println("User is already a volunteer.");
+        }
+    }
+
+    public void removeVolunteerRole() {
+        if (this.isVolunteer) {
+            this.isVolunteer = false;
+            System.out.println("Volunteer role removed successfully.");
+        } else {
+            System.out.println("User is not currently a volunteer.");
+        }
     }
 }
 
