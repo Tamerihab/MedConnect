@@ -7,7 +7,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userID;
 
     @Column
     private String firstName;
@@ -38,11 +38,11 @@ public class User {
 
     // Getters and setters
     public int getId() {
-        return id;
+        return userID;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.userID = id;
     }
 
     public String getFirstName() {
@@ -96,7 +96,7 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + userID +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", nationalID='" + nationalID + '\'' +
