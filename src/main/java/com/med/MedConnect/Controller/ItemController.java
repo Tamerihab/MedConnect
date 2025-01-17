@@ -2,6 +2,7 @@ package com.med.MedConnect.Controller;
 import com.med.MedConnect.Model.Item.*;
 
 
+import com.med.MedConnect.services.DatabaseService;
 import com.med.MedConnect.services.strategy.search.SearchByEquipment;
 import com.med.MedConnect.services.strategy.search.SearchByMedicine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,9 @@ public class ItemController {
     // Endpoint to get all items
     @GetMapping
     public List<Item> getAllItems() {
-        return itemService.getAllItems();
+
+        return DatabaseService.getAllItems();
+        //return itemService.getAllItems();
     }
 
 //    // Endpoint to save a new item (could be either Medicine or Equipment)
