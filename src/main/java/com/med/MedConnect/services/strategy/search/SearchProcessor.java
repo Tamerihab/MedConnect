@@ -1,16 +1,21 @@
 package com.med.MedConnect.services.strategy.search;
 
-class SearchProcessor {
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class SearchProcessor {
     private SearchStrategy searchStrategy;
 
     public void setSearchStrategy(SearchStrategy searchStrategy) {
         this.searchStrategy = searchStrategy;
     }
 
-    public void executeSearch(String searchQuery) {
+    public List<?> executeSearch(String searchQuery) {
         if (searchStrategy == null) {
             throw new IllegalStateException("Search strategy not set!");
         }
-        searchStrategy.search(searchQuery);
+        return searchStrategy.search(searchQuery);
     }
 }
