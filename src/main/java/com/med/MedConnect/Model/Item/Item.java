@@ -1,5 +1,6 @@
 package com.med.MedConnect.Model.Item;
 
+import com.med.MedConnect.Model.User.User;
 import jakarta.persistence.*;
 
 import java.util.Iterator;
@@ -27,12 +28,16 @@ public abstract class Item implements ItemComponent {
     @Column
     private ItemType type;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Item() {
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "donation_id")  // Foreign key to Donation table
-    private Donation donation;  
+    private Donation donation;
 
     public Item(String name, String description, ItemType type, int quantity) {
         this.name = name;
@@ -66,6 +71,13 @@ public abstract class Item implements ItemComponent {
     }
     public void setType(ItemType type) {
         this.type = type;
+    }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void addChild(ItemComponent itemComponent) {

@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "donation_type", discriminatorType = DiscriminatorType.STRING)
-public abstract class Donation {
+//@DiscriminatorColumn(name = "donation_type", discriminatorType = DiscriminatorType.STRING)
+public class Donation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +15,7 @@ public abstract class Donation {
 
     // Field to store the type of donation (Monetary or Item)
     @Enumerated(EnumType.STRING)
-    @Column(name = "donation_type", insertable = false, updatable = false)
+    @Column(name = "donation_type")
     private DonationType donationType;
 
     @ManyToOne
@@ -25,6 +25,10 @@ public abstract class Donation {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
+
+    // Constructor
+    public Donation() {
+    }
 
     // Getters and Setters
     public int getId() {
