@@ -7,12 +7,12 @@ public class CompositeItem implements ItemComponent {
     ArrayList<ItemComponent> itemComponents = new ArrayList<ItemComponent>();
     private String name;
     private String description;
-    private double price;
+//    private double price;
 
-    public CompositeItem(String name, String description, double price) {
+    public CompositeItem(String name, String description) {
         this.name = name;
         this.description = description;
-        this.price = price;
+        //this.price = price;
     }
 
     public void addChild(ItemComponent itemComponent) {
@@ -34,9 +34,9 @@ public class CompositeItem implements ItemComponent {
     public String getDescription() {
         return description;
     }
-    public double getPrice() {
-        return price;
-    }
+//    public double getPrice() {
+//        return price;
+//    }
 
     public Iterator<ItemComponent> createIterator() {
         if (iterator == null) {
@@ -49,7 +49,7 @@ public class CompositeItem implements ItemComponent {
     public void getDetails() {
             System.out.print("\n" + getName());
             System.out.println(", " + getDescription());
-            System.out.println(", " + getPrice());
+           // System.out.println(", " + getPrice());
             System.out.println("---------------------");
 
             Iterator<ItemComponent> iterator = itemComponents.iterator();

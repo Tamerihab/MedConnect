@@ -18,8 +18,8 @@ public abstract class Item implements ItemComponent {
     @Column
     private String description;
 
-    @Column
-    private double price;
+//    @Column
+//    private double price;
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -28,10 +28,10 @@ public abstract class Item implements ItemComponent {
     public Item() {
     }
 
-    public Item(String name, String description, double price, ItemType type) {
+    public Item(String name, String description, ItemType type) {
         this.name = name;
         this.description = description;
-        this.price = price;
+       // this.price = price;
         this.type = type;
     }
 
@@ -43,9 +43,9 @@ public abstract class Item implements ItemComponent {
         return description;
     }
 
-    public double getPrice() {
-        return price;
-    }
+//    public double getPrice() {
+//        return price;
+//    }
 
     public ItemType getType() {
         return type;
