@@ -8,6 +8,7 @@ import com.med.MedConnect.Model.Item.Medicine;
 import com.med.MedConnect.Model.Item.Equipment;
 import com.med.MedConnect.Model.Item.Condition;
 import com.med.MedConnect.Model.Donation.DonationRepo;  // Import the Donation Repository
+import com.med.MedConnect.Model.Donation.DonationType;
 import com.med.MedConnect.Model.Item.ItemRepo;  // Import the Item Repository
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -72,7 +73,7 @@ public class DonationController {
           if ("Monetary".equals(donation.getDonationType())) {
             MonetaryDonation monetaryDonation = new MonetaryDonation();
             monetaryDonation.setAmount(amount);  // Set the amount for monetary donation
-            monetaryDonation.setDonationType("Monetary");
+            monetaryDonation.setDonationType(DonationType.MONETARY);
             monetaryDonation.setUser(user);  // Associate the donation with the user
             donationRepo.save(monetaryDonation);  // Save the monetary donation
         }
@@ -89,7 +90,7 @@ public class DonationController {
             itemRepo.save(item);
 
             // Set the Item for the donation (this will be stored in the same table as Donation)
-            donation.setDonationType("Item");
+            donation.setDonationType(DonationType.ITEM);
             donation.setItem(item);  // Link the item to the donation
             donation.setUser(user);  // Link the user to the donation
             donationRepo.save(donation);  

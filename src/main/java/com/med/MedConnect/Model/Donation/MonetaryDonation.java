@@ -1,19 +1,26 @@
 package com.med.MedConnect.Model.Donation;
 
-import jakarta.persistence.*;
+
+
+import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("Monetary")  // Discriminates this type of donation
 public class MonetaryDonation extends Donation {
 
-    @Column
-    private double amount;  // The amount donated
+    private Double amount;
 
-    public double getAmount() {
+    // Constructor
+    public MonetaryDonation() {
+        super();  // Call the constructor of the parent class (Donation)
+        this.setDonationType(DonationType.MONETARY);  // Set the donation type to MONETARY
+    }
+
+    // Getter and setter for amount
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 }

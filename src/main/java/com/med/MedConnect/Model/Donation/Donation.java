@@ -6,39 +6,41 @@ import jakarta.persistence.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "donation_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "donation_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Donation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int donationId;
 
-    // Make sure to use the column name that matches the DB column
-    @Column(name = "donation_type")  // Ensure that donation_type is mapped correctly
-    private String donationType;  // "Monetary" or "Item"
+    // Field to store the type of donation (Monetary or Item)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "donation_type", insertable = false, updatable = false)
+    private DonationType donationType;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")  // Foreign key reference to the User table
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "item_id")  // Foreign key reference to the Item table (for Item donations)
-    private Item item;  // The item for item donations
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     // Getters and Setters
     public int getId() {
-        return id;
+        return donationId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(int donationId) {
+        this.donationId = donationId;
     }
 
-    public String getDonationType() {
+    public DonationType getDonationType() {
         return donationType;
     }
 
-    public void setDonationType(String donationType) {
+    // Setter for donationType
+    public void setDonationType(DonationType donationType) {
         this.donationType = donationType;
     }
 
