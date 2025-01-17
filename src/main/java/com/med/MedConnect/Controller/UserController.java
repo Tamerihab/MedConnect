@@ -2,13 +2,17 @@ package com.med.MedConnect.Controller;
 
 import com.med.MedConnect.Model.User.User;
 import com.med.MedConnect.Model.User.UserRepo;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 
 @Controller
@@ -22,47 +26,60 @@ public class UserController {
     public String getAllUsers(Model model) {
         List<User> users = userRepository.findAll();
         model.addAttribute("users", users);
-        return "userList"; // A view name that displays all users
+        return "userList";
     }
 
     @GetMapping("/add")
     public String showAddUserForm(Model model) {
         model.addAttribute("user", new User());
-        return "addUser"; // View for adding a new user
+        return "addUser";
     }
 
     @PostMapping
-    public String createUser(@ModelAttribute User user) {
+    public String createUser(@Valid @ModelAttribute User user,
+                             BindingResult result,
+                             Model model) {
+        if (result.hasErrors()) {
+            return "addUser";
+        }
+
         userRepository.save(user);
-        return "redirect:/users"; // Redirect to the user list after successful creation
+        return "redirect:/users";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
-        return userRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable int id, Model model) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        model.addAttribute("user", user);
+        return "editUser";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User userDetails) {
-        return userRepository.findById(id).map(user -> {
-            user.setFirstName(userDetails.getFirstName());
-            user.setLastName(userDetails.getLastName());
-            user.setNationalID(userDetails.getNationalID());
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
-            user.setVolunteer(userDetails.isVolunteer());
-            User updatedUser = userRepository.save(user);
-            return ResponseEntity.ok(updatedUser);
-        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @PostMapping("/{id}")
+    public String updateUser(@PathVariable int id,
+                             @Valid @ModelAttribute User userDetails,
+                             BindingResult result) {
+        if (result.hasErrors()) {
+            return "editUser";
+        }
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        user.setFirstName(userDetails.getFirstName());
+        user.setLastName(userDetails.getLastName());
+        user.setNationalID(userDetails.getNationalID());
+        user.setEmail(userDetails.getEmail());
+        user.setPassword(userDetails.getPassword());
+        user.setVolunteer(userDetails.isVolunteer());
+
+        userRepository.save(user);
+        return "redirect:/users";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
-        return userRepository.findById(id).map(user -> {
-            userRepository.delete(user);
-            return ResponseEntity.noContent().<Void>build();  // Specify the response type as Void
-        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @PostMapping("/{id}/delete")
+    public String deleteUser(@PathVariable int id) {
+        userRepository.findById(id).ifPresent(userRepository::delete);
+        return "redirect:/users";
     }
 }
