@@ -21,12 +21,24 @@ public class BasicVolunteerRole implements VolunteerRole{
     @Column(name = "skill")
     private List<String> skills;
 
+    @ElementCollection
+    @CollectionTable(name = "volunteer_roles", joinColumns = @JoinColumn(name = "volunteerid"))
+    @Column(name = "role")
+    private List<String> roles;
+
+    @ElementCollection
+    @CollectionTable(name = "volunteer_responsibilities", joinColumns = @JoinColumn(name = "volunteerid"))
+    @Column(name = "responsibility")
+    private List<String> responsibilities;
+
     public BasicVolunteerRole() {
     }
 
-    public BasicVolunteerRole(int hours, List<String> skills) {
+    public BasicVolunteerRole(int hours, List<String> skills, List<String> roles, List<String> responsibilities) {
         this.hours = hours;
         this.skills = skills;
+        this.roles = roles;
+        this.responsibilities = responsibilities;
     }
 
     public int getVolunteerID() {
@@ -53,22 +65,52 @@ public class BasicVolunteerRole implements VolunteerRole{
         this.skills = skills;
     }
 
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public void setResponsibilities(List<String> responsibilities) {
+        this.responsibilities = responsibilities;
+    }
+
     @Override
     public String toString() {
         return "BasicVolunteerRole{" +
                 "volunteerID=" + volunteerID +
                 ", hours=" + hours +
                 ", skills=" + skills +
+                ", roles=" + roles +
+                ", responsibilities=" + responsibilities +
                 '}';
     }
 
     @Override
     public void performDuties() {
-
+        addRole("Basic Volunteer");
+        addResponsibility("General support");
     }
 
     @Override
-    public void getResponsibilities() {
+    public List<String> getRoles() {
+        return roles;
+    }
 
+    @Override
+    public List<String> getResponsibilities() {
+        return responsibilities;
+    }
+
+    @Override
+    public void addRole(String role) {
+        if (!roles.contains(role)) {
+            roles.add(role);
+        }
+    }
+
+    @Override
+    public void addResponsibility(String responsibility) {
+        if (!responsibilities.contains(responsibility)) {
+            responsibilities.add(responsibility);
+        }
     }
 }

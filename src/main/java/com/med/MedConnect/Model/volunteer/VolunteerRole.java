@@ -1,7 +1,12 @@
 package com.med.MedConnect.Model.volunteer;
 
+import java.util.List;
+
 public interface VolunteerRole {
 
-    public void performDuties();
-    public void getResponsibilities();
+    void performDuties();
+    List<String> getRoles();
+    List<String> getResponsibilities();
+    void addRole(String role);
+    void addResponsibility(String responsibility);
 }
