@@ -30,8 +30,8 @@ public class Medicine extends Item {
     }
 
      //Parameterized constructor
-    public Medicine(String name, String description, String manufacturer, Date expiryDate) {
-        super(name, description,ItemType.MEDICINE);  // Assuming ItemType is an enum with MEDICINE
+    public Medicine(String name, String description, String manufacturer, Date expiryDate, int quantity) {
+        super(name, description,ItemType.MEDICINE, quantity);  // Assuming ItemType is an enum with MEDICINE
         this.manufacturer = manufacturer;
         this.expiryDate = expiryDate;
     }
@@ -58,6 +58,6 @@ public class Medicine extends Item {
     @Override
     public void getDetails() {
         System.out.println("Type: MEDICINE, Name: " + getName() + ", Description: " + getDescription() +
-                 ", Manufacturer: " + manufacturer + ", Expiry Date: " + expiryDate);
+                 ", Manufacturer: " + manufacturer + ", Expiry Date: " + expiryDate+ ", Quantity: " + getQuantity());
     }
 }

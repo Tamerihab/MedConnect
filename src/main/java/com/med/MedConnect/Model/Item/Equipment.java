@@ -15,7 +15,7 @@ public class Equipment extends Item {
     @Enumerated(EnumType.STRING)
     @Column(name = "item_condition")
     @JsonProperty("condition")
-    private Condition condition;
+    private Condition itemCondition;
 
 
     public Equipment() {
@@ -24,9 +24,9 @@ public class Equipment extends Item {
     }
 
     // Parameterized constructor
-    public Equipment(String name, String description,Condition condition) {
-        super(name, description, ItemType.EQUIPMENT);  // Assuming ItemType is an enum with EQUIPMENT
-        this.condition = condition;
+    public Equipment(String name, String description,Condition itemCondition,int quantity) {
+        super(name, description, ItemType.EQUIPMENT,quantity); // Assuming ItemType is an enum with EQUIPMENT
+        this.itemCondition = itemCondition;
 
     }
 
@@ -34,6 +34,6 @@ public class Equipment extends Item {
     @Override
     public void getDetails() {
         System.out.println("Type: EQUIPMENT, Name: " + getName() + ", Description: " + getDescription() +
-              ", Condition: " + condition);
+              ", Condition: " + itemCondition + ", Quantity: " + getQuantity());
     }
 }

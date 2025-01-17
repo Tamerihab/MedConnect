@@ -11,7 +11,7 @@ public class EventDetails {
     private int eventDetailsID;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id", referencedColumnName = "eventid")
+    @JoinColumn(name = "event_id")
     private Event event;
 
     @ManyToOne(cascade = CascadeType.ALL) //each role belongs to one volunteer

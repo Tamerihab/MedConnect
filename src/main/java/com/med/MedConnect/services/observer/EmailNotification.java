@@ -16,7 +16,9 @@ public class EmailNotification implements Observer {
     private final UserRepo userRepo;
 
     @Autowired
-    public EmailNotification(JavaMailSender emailSender, UserRepo userRepo, Subject subject) {
+    public EmailNotification(JavaMailSender emailSender,
+                             UserRepo userRepo,
+                             Subject subject) {
         this.emailSender = emailSender;
         this.userRepo = userRepo;
         subject.subscribe(this);
@@ -25,15 +27,11 @@ public class EmailNotification implements Observer {
     @Override
     public void update(String notificationType, String message, int userId) {
         Optional<User> optionalUser = userRepo.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+        optionalUser.ifPresent(user -> {
             if (user.getEmail() != null) {
                 sendEmail(user.getEmail(), notificationType, message);
             }
-        } else {
-            // Log or handle the case where the user is not found
-            System.out.println("User with ID " + userId + " not found.");
-        }
+        });
     }
 
     private void sendEmail(String to, String subject, String message) {
