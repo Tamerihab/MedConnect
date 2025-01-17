@@ -90,14 +90,18 @@ package "Model" {
     }
 
     class Donation {
-        -id: int
-        -type: String
+        -donationid: int
+        -donation_type: type
         -description: String
         -amount: int
         -state: DonationState
         -userId: int
         +setState(state: DonationState)
         +process()
+    }
+
+    class MonetaryDonation extends Donation{
+     -amount: double
     }
 
 
@@ -172,6 +176,7 @@ package "Model" {
                - String name
                - String description
                - ItemType type
+               -amount: int
                + Item()
                + Item(String name, String description, ItemType type)
                + getDetails()
@@ -196,6 +201,10 @@ package "Model" {
 
            enum ItemType {
                EQUIPMENT, MEDICINE
+           }
+
+           enum DonationType{
+           ITEM, MONETARY
            }
 
            enum Condition {
@@ -725,6 +734,7 @@ Item <|-- Medicine
 CompositeItem --> "1..*" ItemComponent
 CompositeIterator --> "1..*" ItemComponent
 ItemType <|-- Item
+DonationType <|-- Donation
 Condition <|-- Medicine
 Condition <|-- Equipment
 
