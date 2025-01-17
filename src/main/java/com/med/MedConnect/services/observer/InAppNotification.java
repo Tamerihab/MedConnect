@@ -20,7 +20,7 @@ public class InAppNotification implements Observer {
     @Override
     public void update(String notificationType, String message, int userId) {
         // Create and save notification to database
-        Notification notification = new Notification(notificationType, message, userId);
+        Notification notification = new Notification(notificationType, message);
         notificationRepository.save(notification);
 
         // Send real-time notification via WebSocket
