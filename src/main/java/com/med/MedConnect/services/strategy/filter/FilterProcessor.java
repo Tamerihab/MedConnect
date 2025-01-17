@@ -1,5 +1,7 @@
 package com.med.MedConnect.services.strategy.filter;
 
+import java.util.List;
+
 public class FilterProcessor {
     private FilterStrategy strategy;
 
@@ -7,11 +9,12 @@ public class FilterProcessor {
         this.strategy = strategy;
     }
 
-    public void processFilter(String searchQuery) {
+    public List<?> processFilter(String searchQuery) {
         if (strategy == null) {
             System.out.println("No filter strategy selected.");
-        } else {
-            strategy.filter(searchQuery);
         }
+
+        return strategy.filter(searchQuery);
+
     }
 }
