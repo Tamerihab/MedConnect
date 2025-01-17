@@ -1,5 +1,6 @@
 package com.med.MedConnect.Model.User;
 
+import com.med.MedConnect.Model.Address.Address;  // Import the Address class
 import jakarta.persistence.*;
 
 @Entity
@@ -22,18 +23,23 @@ public class User {
     @Column
     private boolean isVolunteer;
 
+    @ManyToOne  // Many users can have one address (many-to-one relationship)
+    @JoinColumn(name = "address_id")  // This will be the foreign key column in the user table
+    private Address address;  // The user's address (city)
+
     // Default constructor
     public User() {
     }
 
     // Constructor for creating user objects
-    public User(String firstName, String lastName, String nationalID, String email, String password, boolean isVolunteer) {
+    public User(String firstName, String lastName, String nationalID, String email, String password, boolean isVolunteer, Address address) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationalID = nationalID;
         this.email = email;
         this.password = password;
         this.isVolunteer = isVolunteer;
+        this.address = address;  // Assign address to the user
     }
 
     // Getters and setters
@@ -93,6 +99,14 @@ public class User {
         isVolunteer = volunteer;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -102,9 +116,11 @@ public class User {
                 ", nationalID='" + nationalID + '\'' +
                 ", email='" + email + '\'' +
                 ", isVolunteer=" + isVolunteer +
+                ", address=" + address +  // Include the address in the toString method
                 '}';
     }
 
+    // Additional functionality for volunteer role
     public void addVolunteerRole() {
         if (!this.isVolunteer) {
             this.isVolunteer = true;
@@ -123,4 +139,3 @@ public class User {
         }
     }
 }
-

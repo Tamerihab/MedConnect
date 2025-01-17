@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ItemRepo extends JpaRepository<Item, Long> {
+public interface ItemRepo extends JpaRepository<Item, Integer> {
 
     // Custom query to search items by name (for both Medicine and Equipment)
     List<Item> findByNameContainingIgnoreCase(String name);
