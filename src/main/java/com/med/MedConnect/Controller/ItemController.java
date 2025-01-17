@@ -1,10 +1,9 @@
 package com.med.MedConnect.Controller;
-import com.med.MedConnect.Model.Item.Equipment;
-import com.med.MedConnect.Model.Item.Item;
-import com.med.MedConnect.Model.Item.ItemService;
+import com.med.MedConnect.Model.Item.*;
 
 
-import com.med.MedConnect.Model.Item.Medicine;
+import com.med.MedConnect.services.strategy.search.SearchByEquipment;
+import com.med.MedConnect.services.strategy.search.SearchByMedicine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +15,9 @@ public class ItemController {
 
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private ItemRepo itemRepo;
 
     // Endpoint to get all items
     @GetMapping
@@ -39,4 +41,25 @@ public class ItemController {
     public Equipment saveEquipment(@RequestBody Equipment equipment) {
         return itemService.saveEquipment(equipment);
     }
+
+//    @Autowired
+//    private SearchByMedicine searchByMedicine;
+//
+//    @Autowired
+//    private SearchByEquipment searchByEquipment;
+
+//    @GetMapping("/search/medicine")
+//    public List<Item> searchMedicine(@RequestParam String searchQuery) {
+//        return searchByMedicine.search(searchQuery);
+//    }
+//    @GetMapping("/search/equipment")
+//    public List<Item> searchEquipment(@RequestParam String searchQuery) {
+//        return searchByEquipment.search(searchQuery);
+//        //return itemRepo.findByNameContainingIgnoreCaseAndType(searchQuery, ItemType.EQUIPMENT);
+//    }
+
+//    @GetMapping("/search/equipment")
+//    public void searchEquipment(@RequestParam String query) {
+//        searchByEquipment.search(query);
+//    }
 }
