@@ -1,26 +1,23 @@
 package com.med.MedConnect.Controller;
 
-
 import com.med.MedConnect.Model.Donation.Donation;
 import com.med.MedConnect.Model.Donation.MonetaryDonation;
 import com.med.MedConnect.Model.Item.Item;
 import com.med.MedConnect.Model.Item.Medicine;
 import com.med.MedConnect.Model.Item.Equipment;
-import com.med.MedConnect.Model.Item.Condition;
-import com.med.MedConnect.Model.Donation.DonationRepo;  // Import the Donation Repository
+import com.med.MedConnect.Model.Donation.DonationRepo;
 import com.med.MedConnect.Model.Donation.DonationType;
-import com.med.MedConnect.Model.Item.ItemRepo;  // Import the Item Repository
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import com.med.MedConnect.Model.Item.ItemRepo;
 import com.med.MedConnect.Model.User.User;
 import com.med.MedConnect.Model.User.UserRepo;
-import org.springframework.ui.Model; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
-@Controller
-@RequestMapping("/donations")
+@RestController
+@RequestMapping("/api/donations")
 public class DonationController {
 
     @Autowired
@@ -29,73 +26,99 @@ public class DonationController {
     @Autowired
     private ItemRepo itemRepo;
 
-     @Autowired
-     private UserRepo userRepo;
-    
-     @GetMapping("/add")
-     public String showDonationForm(Model model, @RequestParam(required = false) String itemType) {
-         // Instantiate the donation object (MonetaryDonation or ItemDonation)
-         model.addAttribute("donation", new MonetaryDonation());
-     
-         // Dynamically instantiate either Medicine or Equipment based on itemType
-         if ("Medicine".equals(itemType)) {
-             model.addAttribute("item", new Medicine());  // Instantiate Medicine
-         } else if ("Equipment".equals(itemType)) {
-             model.addAttribute("item", new Equipment());  // Instantiate Equipment
-         }
-     
-         return "addDonation";  // Return the form view (addDonation.html)
-     }
-     
-
-    @PostMapping("/add")
-    public String createDonation(@ModelAttribute Donation donation, 
-                                  @RequestParam(required = false) Double amount,
-                                  @RequestParam(required = false) String name, 
-                                  @RequestParam(required = false) String description,
-                                  @RequestParam(required = false) String itemType, 
-                                  @RequestParam(required = false) String manufacturer,
-                                  @RequestParam(required = false) Date expiryDate,
-                                  @RequestParam(required = false) int quantity, 
-                                  @RequestParam(required = false) Condition condition) {
-                                  //@RequestParam(required = true) int userId) {
-
-        // Retrieve the user from the database using the userId
-        int userId = 2;
-            User user = userRepo.findById(userId).orElse(null);
-
-            if (user == null) {
-                // Handle the case where the user is not found
-                return "redirect:/donations";  // Redirect to an error page or show a message
-            }
-
-          // Handle Monetary Donation
-          if ("Monetary".equals(donation.getDonationType())) {
-            MonetaryDonation monetaryDonation = new MonetaryDonation();
-            monetaryDonation.setAmount(amount);  // Set the amount for monetary donation
-            monetaryDonation.setDonationType(DonationType.MONETARY);
-            monetaryDonation.setUser(user);  // Associate the donation with the user
-            donationRepo.save(monetaryDonation);  // Save the monetary donation
-        }
-        // Handle Item Donation
-        else if ("Item".equals(donation.getDonationType())) {
-            Item item = null;
-            if ("Medicine".equals(itemType)) {
-                item = new Medicine(name, description, manufacturer, expiryDate, quantity);  // Create a Medicine
-            } else if ("Equipment".equals(itemType)) {
-                item = new Equipment(name, description, condition, quantity);  // Create an Equipment
-            }
-
-            // Save the item first (medicine or equipment)
-            itemRepo.save(item);
-
-            // Set the Item for the donation (this will be stored in the same table as Donation)
-            donation.setDonationType(DonationType.ITEM);
-            donation.setItem(item);  // Link the item to the donation
-            donation.setUser(user);  // Link the user to the donation
-            donationRepo.save(donation);  
-        }
-
-        return "redirect:/donations";  // Redirect to donations list
+    @Autowired
+    private UserRepo userRepo;
+    public User getUserById(int userId) {
+        return userRepo.findById(userId).orElse(null);
     }
+
+    // Fetch all donations
+    @GetMapping("/all")
+    public List<Donation> getAllDonations() {
+        return donationRepo.findAll();  // Fetch all donations from the repository
+    }
+
+    // Endpoint to handle monetary donations
+    @PostMapping("/monetary")
+    public MonetaryDonation saveMonetaryDonation(@RequestBody MonetaryDonation monetaryDonation) {
+        // You can get the user directly using userRepo
+        User user = getUserById(monetaryDonation.getUser().getId());
+        if (user != null) {
+            monetaryDonation.setUser(user);  // Set the user to the donation
+            monetaryDonation.setDonationType(DonationType.MONETARY);  // Set donation type
+            return donationRepo.save(monetaryDonation);  // Save the monetary donation
+        }
+        return null; // Handle case where user is not found
+    }
+
+
+
+    // Endpoint to handle medicine donations
+    @PostMapping("/medicine")
+    public Medicine saveMedicine(@RequestBody Medicine medicine) {
+        // Get the user from the request (assuming the userId is passed in the request body)
+        User user = getUserById(medicine.getUser().getId());
+        if (user != null) {
+
+            medicine.setUser(user);  // Set the user for the medicine
+
+            // Save the Medicine item first
+            Item savedMedicine = itemRepo.save(medicine);
+
+            // Create a Donation object for the item donation
+            Donation donation = new Donation();
+            donation.setDonationType(DonationType.ITEM);
+            donation.setItem(savedMedicine);  // Set the saved item (medicine)
+            donation.setUser(user);  // Set the user to the donation
+
+            // Save the donation record
+            Donation savedDonation = donationRepo.save(donation);
+
+            // Set the donationId in the Medicine item
+            medicine.setDonation(savedDonation);  // Associate donation with the medicine
+
+            // Save the Medicine with the donation ID
+            itemRepo.save(medicine);
+
+            // Return the saved Medicine item with its donation set
+            return (Medicine) savedMedicine;
+        }
+        return null;  // Handle case where user is not found
+    }
+
+
+    // Endpoint to handle equipment donations
+    @PostMapping("/equipment")
+    public Equipment saveEquipment(@RequestBody Equipment equipment) {
+        // Get the user from the request (assuming the userId is passed in the request body)
+        User user = getUserById(equipment.getUser().getId());
+        if (user != null) {
+
+            equipment.setUser(user);  // Set the user for the equipment
+
+            // Save the Equipment item first
+            Item savedEquipment = itemRepo.save(equipment);
+
+            // Create a Donation object for the item donation
+            Donation donation = new Donation();
+            donation.setDonationType(DonationType.ITEM);
+            donation.setItem(savedEquipment);  // Set the saved item (equipment)
+            donation.setUser(user);  // Set the user to the donation
+
+            // Save the donation record
+            Donation savedDonation = donationRepo.save(donation);
+
+            // Set the donationId in the Equipment item
+            equipment.setDonation(savedDonation);  // Associate donation with the equipment
+
+            // Save the Equipment with the donation ID
+            itemRepo.save(equipment);
+
+            // Return the saved Equipment item with its donation set
+            return  itemRepo.save(equipment);
+        }
+        return null;  // Handle case where user is not found
+    }
+
+
 }
