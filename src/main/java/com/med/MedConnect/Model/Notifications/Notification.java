@@ -1,7 +1,6 @@
 package com.med.MedConnect.Model.Notifications;
 
-
-
+import com.med.MedConnect.Model.User.User;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -9,19 +8,17 @@ import java.util.Date;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int notificationID;
 
-    @Column(nullable = false)
+    @Column
     private String type;
 
-    @Column(nullable = false)
+    @Column
     private String message;
 
-    @Column(name = "user_id", nullable = false)
-    private int userId;
-
-    @Column(nullable = false)
-    private boolean read;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "user_id", referencedColumnName = "userID")
+    private User user;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false)
@@ -30,17 +27,15 @@ public class Notification {
     // Default constructor required by JPA
     public Notification() {}
 
-    public Notification(String type, String message, int userId) {
+    public Notification(String type, String message) {
         this.type = type;
         this.message = message;
-        this.userId = userId;
-        this.read = false;
         this.createdAt = new Date();
     }
 
     // Getters and setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() { return notificationID; }
+    public void setId(int id) { this.notificationID = id; }
 
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
@@ -48,13 +43,9 @@ public class Notification {
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
-
-    public boolean isRead() { return read; }
-    public void setRead(boolean read) { this.read = read; }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 }
-
