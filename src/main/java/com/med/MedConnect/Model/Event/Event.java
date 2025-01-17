@@ -1,6 +1,6 @@
 package com.med.MedConnect.Model.Event;
 
-import com.med.MedConnect.Model.volunteer.BasicVolunteerRole;
+import com.med.MedConnect.Model.Volunteer.BasicVolunteerRole;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
