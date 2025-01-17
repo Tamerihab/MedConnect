@@ -10,7 +10,7 @@ public class SMSNotification implements Observer {
     }
 
     @Override
-    public void update(String notificationType, String message) {
+    public void update(String notificationType, String message, int userId) {
         this.notificationType = notificationType;
         this.message = message;
         sendSMS();
