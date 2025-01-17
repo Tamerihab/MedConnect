@@ -679,6 +679,16 @@ VolunteerController --> User
 
 ' Controller to View Relationships
 
+' Composite Pattern
+ItemComponent <|.. CompositeItem
+ItemComponent <|.. Item
+Item <|-- Equipment
+Item <|-- Medicine
+CompositeItem --> "1..*" ItemComponent
+CompositeIterator --> "1..*" ItemComponent
+ItemType <|-- Item
+Condition <|-- Medicine
+Condition <|-- Equipment
 
 ' Service to Service Relationships
 DonationState <|.. PendingState

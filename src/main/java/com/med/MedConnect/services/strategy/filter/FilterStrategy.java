@@ -1,6 +1,8 @@
 package com.med.MedConnect.services.strategy.filter;
 
+import java.util.List;
+
 public interface FilterStrategy {
 
-    void filter(String searchQuery);
+    List<?> filter(String searchQuery);
 }

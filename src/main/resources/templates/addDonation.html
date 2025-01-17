@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Donation</title>
+</head>
+<body>
+<h1>Add Donation</h1>
+<form th:action="@{/donations/add}" method="post" th:object="${donation}">
+    <!-- Hidden userId (set this to the userId value you want to test, e.g., userId = 2) -->
+    <input type="hidden" th:field="*{userId}" value="2" />
+
+    <!-- Donation Type -->
+    <label for="donationType">Donation Type:</label>
+    <select id="donationType" name="donationType" onchange="showDonationDetails()" required>
+        <option value="Monetary">Monetary</option>
+        <option value="Item">Item</option>
+    </select><br/><br/>
+
+    <!-- Monetary Donation Section -->
+    <div id="monetaryDonation" style="display:none;">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" th:field="*{amount}" required/><br/><br/>
+    </div>
+
+    <!-- Item Donation Section -->
+    <div id="itemDonation" style="display:none;">
+        <label for="itemType">Item Type:</label>
+        <select id="itemType" name="itemType" onchange="showItemDetails()" required>
+            <option value="Medicine">Medicine</option>
+            <option value="Equipment">Equipment</option>
+        </select><br/><br/>
+
+        <!-- Fields for Item Donation -->
+        <label for="name">Item Name:</label>
+        <input type="text" id="name" th:field="*{name}" required/><br/><br/>
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" th:field="*{description}" required/><br/><br/>
+
+        <!-- Medicine Details Section -->
+        <div id="medicineDetails" style="display:none;">
+            <label for="manufacturer">Manufacturer:</label>
+            <input type="text" id="manufacturer" th:field="*{manufacturer}" required/><br/><br/>
+
+            <label for="expiryDate">Expiry Date:</label>
+            <input type="date" id="expiryDate" th:field="*{expiryDate}" required/><br/><br/>
+        </div>
+
+        <!-- Equipment Details Section -->
+        <div id="equipmentDetails" style="display:none;">
+            <label for="condition">Condition:</label>
+            <select id="condition" th:field="*{condition}" required>
+                <option value="NEW">New</option>
+                <option value="USED">Used</option>
+                <option value="REFURBISHED">Refurbished</option>
+            </select><br/><br/>
+        </div>
+
+        <!-- Quantity -->
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" th:field="*{quantity}" required/><br/><br/>
+    </div>
+
+    <button type="submit">Add Donation</button>
+</form>
+
+<script>
+    function showDonationDetails() {
+        var donationType = document.getElementById('donationType').value;
+        if (donationType === 'Monetary') {
+            document.getElementById('monetaryDonation').style.display = 'block';
+            document.getElementById('itemDonation').style.display = 'none';
+        } else {
+            document.getElementById('monetaryDonation').style.display = 'none';
+            document.getElementById('itemDonation').style.display = 'block';
+        }
+    }
+
+    function showItemDetails() {
+        var itemType = document.getElementById('itemType').value;
+        if (itemType === 'Medicine') {
+            document.getElementById('medicineDetails').style.display = 'block';
+            document.getElementById('equipmentDetails').style.display = 'none';
+        } else {
+            document.getElementById('medicineDetails').style.display = 'none';
+            document.getElementById('equipmentDetails').style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>
