@@ -8,7 +8,7 @@ public class Medicine extends Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int itemId;
 
     @Column
     private String manufacturer;

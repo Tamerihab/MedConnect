@@ -4,26 +4,13 @@ import jakarta.persistence.*;
 
 import java.util.Iterator;
 
-//import com.fasterxml.jackson.annotation.JsonSubTypes;
-//import com.fasterxml.jackson.annotation.JsonTypeInfo;
-//
-//@JsonTypeInfo(
-//        use = JsonTypeInfo.Id.NAME,
-//        include = JsonTypeInfo.As.PROPERTY,
-//        property = "type"
-//)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = Medicine.class, name = "medicine"),
-//        @JsonSubTypes.Type(value = Equipment.class, name = "equipment")
-//})
-
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Item implements ItemComponent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int itemId;
 
     @Column
     private String name;

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Item List</title>
+</head>
+<body>
+<h1>All Items</h1>
+<table border="1">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Price</th>
+    <th>Type</th>
+    <th>Actions</th>
+  </tr>
+  <tr th:each="item : ${items}">
+    <td th:text="${item.id}"></td>
+    <td th:text="${item.name}"></td>
+    <td th:text="${item.description}"></td>
+    <td th:text="${item.price}"></td>
+    <td th:text="${item.type}"></td>
+    <td>
+      <a th:href="@{'/items/' + ${item.id}}">View</a> |
+      <a th:href="@{'/items/delete/' + ${item.id}}">Delete</a>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

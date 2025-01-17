@@ -8,7 +8,7 @@ public class Equipment extends Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int itemId;
 
     @Column
     private String manufacturer;
@@ -22,7 +22,7 @@ public class Equipment extends Item {
         setType(ItemType.EQUIPMENT);
     }
 
-    // Default constructor for JPA
+
     // Parameterized constructor
     public Equipment(String name, String description, double price, String manufacturer, String warranty) {
         super(name, description, price, ItemType.EQUIPMENT);  // Assuming ItemType is an enum with EQUIPMENT
