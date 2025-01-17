@@ -129,22 +129,66 @@ package "Model" {
     }
 
     interface ItemComponent {
-        +getChild()
-        +getDetails()
-    }
+           + addChild(ItemComponent itemComponent)
+           + removeChild(ItemComponent itemComponent)
+           + getChild(int i): ItemComponent
+           + createIterator(): Iterator<ItemComponent>
+           + getDetails()
+       }
 
-    class CompositeItem implements ItemComponent {
-        -itemID: int
-        -name: String
-        -description: String
-        -quantity: int
-        -unitPrice: float
-        -childItems: List<ItemComponent>
-        +addChild(child: ItemComponent)
-        +removeChild(child: ItemComponent)
-        +getChild(index: int): ItemComponent
-        +getDetails()
-    }
+       class CompositeItem {
+           - Iterator<ItemComponent> iterator
+           - ArrayList<ItemComponent> itemComponents
+           - String name
+           - String description
+           + CompositeItem(String name, String description)
+           + addChild(ItemComponent itemComponent)
+           + removeChild(ItemComponent itemComponent)
+           + getChild(int i): ItemComponent
+           + createIterator(): Iterator<ItemComponent>
+           + getDetails()
+       }
+
+       class CompositeIterator {
+           - Stack<Iterator<ItemComponent>> stack
+           + CompositeIterator(Iterator<ItemComponent> iterator)
+           + hasNext(): boolean
+           + next(): ItemComponent
+       }
+
+       abstract class Item {
+           - String name
+           - String description
+           - ItemType type
+           + Item()
+           + Item(String name, String description, ItemType type)
+           + getDetails()
+       }
+
+       class Equipment {
+           - int itemId
+           - Condition condition
+           + Equipment()
+           + Equipment(String name, String description, Condition condition)
+           + getDetails()
+       }
+
+       class Medicine {
+           - int itemId
+           - String manufacturer
+           - Date expiryDate
+           + Medicine()
+           + Medicine(String name, String description, String manufacturer, Date expiryDate)
+           + getDetails()
+       }
+
+       enum ItemType {
+           EQUIPMENT, MEDICINE
+       }
+
+       enum Condition {
+           NEW, USED, REFURBISHED
+       }
 }
 
 package "View" {}
@@ -469,6 +513,16 @@ DonationController --> DonationFacade
 
 ' Controller to View Relationships
 
+' Composite Pattern
+ItemComponent <|.. CompositeItem
+ItemComponent <|.. Item
+Item <|-- Equipment
+Item <|-- Medicine
+CompositeItem --> "1..*" ItemComponent
+CompositeIterator --> "1..*" ItemComponent
+ItemType <|-- Item
+Condition <|-- Medicine
+Condition <|-- Equipment
 
 ' Service to Service Relationships
 DonationState <|.. PendingState
