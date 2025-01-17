@@ -35,7 +35,7 @@ public class UserController {
         List<Address> countries = addressRepository.findByParentIsNull();  // Fetch countries
         model.addAttribute("user", new User());  // Create new User object
         model.addAttribute("countries", countries);  // Add countries to model
-        return "addUser";  // Return the view for adding a user
+        return "adduser";  // Return the view for adding a user
     }
     
     @PostMapping
