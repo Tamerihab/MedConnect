@@ -1,6 +1,7 @@
 package com.med.MedConnect.Model.Volunteer;
 
 import com.med.MedConnect.Model.Event.Event;
+import com.med.MedConnect.Model.User.User;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -11,11 +12,16 @@ public class BasicVolunteerRole implements VolunteerRole{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int volunteerID;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private Event event;
     @Column
     private int hours;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userid")
+    private User user;
+
     @ElementCollection
     @CollectionTable(name = "volunteer_skills", joinColumns = @JoinColumn(name = "volunteerid"))
     @Column(name = "skill")
@@ -39,6 +45,14 @@ public class BasicVolunteerRole implements VolunteerRole{
         this.skills = skills;
         this.roles = roles;
         this.responsibilities = responsibilities;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getVolunteerID() {
