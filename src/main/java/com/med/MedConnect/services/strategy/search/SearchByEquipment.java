@@ -6,7 +6,7 @@ public class SearchByEquipment implements SearchStrategy {
         System.out.println("Searching for equipment: " + searchQuery);
 
         // Query the database for matching hospital names
-        EquipmentRepository.findByNameContainingIgnoreCase(searchQuery)
-                .forEach(equipment -> System.out.println(equipment.getName()));
+//        EquipmentRepository.findByNameContainingIgnoreCase(searchQuery)
+//                .forEach(equipment -> System.out.println(equipment.getName()));
     }
 }
