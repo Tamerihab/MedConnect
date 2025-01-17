@@ -63,6 +63,9 @@ public abstract class Item implements ItemComponent {
     public ItemType getType() {
         return type;
     }
+    public void setType(ItemType type) {
+        this.type = type;
+    }
 
     public void addChild(ItemComponent itemComponent) {
         throw new UnsupportedOperationException("This operation is not supported for Leaf objects");

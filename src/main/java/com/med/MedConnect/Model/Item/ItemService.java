@@ -15,9 +15,17 @@ public class ItemService {
     public List<Item> getAllItems() {
         return new ArrayList<>(itemRepo.findAll());
     }
+//    public Item saveItem(Item item) {
+//        return itemRepo.save(item);
+//    }
 
-    // Method to save a new item (could be either Medicine or Equipment)
-    public Item saveItem(Item item) {
-        return itemRepo.save(item);
+    // Method to save a new Medicine item
+    public Medicine saveMedicine(Medicine medicine) {
+        return (Medicine) itemRepo.save(medicine);  // Save and return the Medicine object
+    }
+
+    // Method to save a new Equipment item
+    public Equipment saveEquipment(Equipment equipment) {
+        return (Equipment) itemRepo.save(equipment);  // Save and return the Equipment object
     }
 }

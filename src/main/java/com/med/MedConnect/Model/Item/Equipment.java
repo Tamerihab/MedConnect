@@ -16,11 +16,13 @@ public class Equipment extends Item {
     @Column
     private String warranty;
 
-    // Default constructor for JPA
+
     public Equipment() {
         super();
+        setType(ItemType.EQUIPMENT);
     }
 
+    // Default constructor for JPA
     // Parameterized constructor
     public Equipment(String name, String description, double price, String manufacturer, String warranty) {
         super(name, description, price, ItemType.EQUIPMENT);  // Assuming ItemType is an enum with EQUIPMENT

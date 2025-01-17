@@ -19,19 +19,22 @@ public class Medicine extends Item {
     // Default constructor for JPA
     public Medicine() {
         super();
+        setType(ItemType.MEDICINE);
     }
 
     // Parameterized constructor
-    public Medicine(String name, String description, double price, String manufacturer, String expiryDate) {
-        super(name, description, price, ItemType.MEDICINE);  // Assuming ItemType is an enum with MEDICINE
-        this.manufacturer = manufacturer;
-        this.expiryDate = expiryDate;
-    }
+//    public Medicine(String name, String description, double price, String manufacturer, String expiryDate) {
+//        super(name, description, price, ItemType.MEDICINE);  // Assuming ItemType is an enum with MEDICINE
+//        this.manufacturer = manufacturer;
+//        this.expiryDate = expiryDate;
+//    }
 
     // Getter and Setter methods for the new fields
     public String getManufacturer() {
         return manufacturer;
     }
+
+
 
     public void setManufacturer(String manufacturer) {
         this.manufacturer = manufacturer;
