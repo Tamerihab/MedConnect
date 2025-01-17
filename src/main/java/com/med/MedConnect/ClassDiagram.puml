@@ -130,6 +130,14 @@ package "Model" {
         -totalHours: int
     }
 
+    class Notification{
+        -notificationID: int
+        - type : String
+        -message: String
+        -date: date
+        -recipient: String
+    }
+
     class Payment {
         -paymentID: int
         -type: Type
