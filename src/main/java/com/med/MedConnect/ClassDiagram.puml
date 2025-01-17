@@ -82,7 +82,6 @@ package "Model" {
         -id: int
         -type: String
         -description: String
-        -quantity: int
         -state: DonationState
         -userId: int
         +setState(state: DonationState)
