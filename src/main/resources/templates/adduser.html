@@ -2,80 +2,327 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Add New User</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Previous CSS remains the same */
+        /* ... */
+
+        /* Add these specific styles for the volunteer skills section */
+        #volunteerSkills {
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        #volunteerSkills.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Rest of your existing CSS */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --error-color: #ef4444;
+            --text-color: #374151;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+            color: var(--text-color);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 32rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.375rem;
+            color: var(--text-color);
+        }
+
+        input:not([type="checkbox"]),
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.15s ease;
+        }
+
+        input:not([type="checkbox"]):focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .social-container {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.social {
+    color: #fff;
+    font-size: 20px;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+.social.facebook { background: #3b5998; }
+.social.google { background: #db4437; }
+
+.social:hover {
+    opacity: 0.8;
+}
+
+.fab {
+    font-size: 20px;
+    line-height: 1;
+}
+
+        .login-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
 </head>
+<!-- Rest of your HTML remains exactly the same -->
 <body>
-<h1>Add New User</h1>
-<form th:action="@{/users}" method="post" th:object="${user}">
-    <!-- Add validation error messages -->
-    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-        <ul>
-            <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-        </ul>
+<!-- Previous HTML content remains the same -->
+<h1>Register</h1>
+<div class="form-container">
+    <div class="social-container">
+        <a href="#" class="social facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social google"><i class="fab fa-google"></i></a>
     </div>
+    <form th:action="@{/users}" method="post" th:object="${user}">
+        <!-- Previous form fields remain the same -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" th:field="*{firstName}" required/>
+                <span class="error-message" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span>
+            </div>
 
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" th:field="*{firstName}" required/>
-    <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></span><br/><br/>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" th:field="*{lastName}" required/>
+                <span class="error-message" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span>
+            </div>
+        </div>
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" th:field="*{lastName}" required/>
-    <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></span><br/><br/>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" th:field="*{email}" required/>
+            <span class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" th:field="*{email}" required/>
-    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span><br/><br/>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}" required/>
+            <span class="error-message" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+        </div>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" th:field="*{password}" required/>
-    <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span><br/><br/>
+        <div class="form-group">
+            <label for="nationalID">National ID</label>
+            <input type="text" id="nationalID" th:field="*{nationalID}" required/>
+            <span class="error-message" th:if="${#fields.hasErrors('nationalID')}" th:errors="*{nationalID}"></span>
+        </div>
 
-    <label for="nationalID">National ID:</label>
-    <input type="text" id="nationalID" th:field="*{nationalID}" required/>
-    <span th:if="${#fields.hasErrors('nationalID')}" th:errors="*{nationalID}"></span><br/><br/>
+        <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country" name="country" onchange="updateCities()" required>
+                <option value="" disabled selected>Select Country</option>
+                <option th:each="country : ${countries}" th:value="${country.addressId}" th:text="${country.name}"></option>
+            </select>
+        </div>
 
-    <label for="volunteer">Volunteer:</label>
-    <input type="checkbox" id="volunteer" th:field="*{volunteer}"/><br/><br/>
+        <div class="form-group">
+            <label for="city">City</label>
+            <select id="city" name="city" required>
+                <option value="" disabled selected>Select City</option>
+            </select>
+        </div>
 
-    <!-- Country Dropdown -->
-    <label for="country">Country:</label>
-    <select id="country" name="country" onchange="updateCities()" required>
-        <option value="" disabled selected>Select Country</option>
-        <option th:each="country : ${countries}" th:value="${country.addressId}" th:text="${country.name}"></option>
-    </select><br/><br/>
+        <div class="checkbox-group">
+            <label for="volunteer">Would you like to be a volunteer?</label>
+            <input type="checkbox" id="volunteer" th:field="*{volunteer}" onchange="toggleVolunteerSkills()"/>
+        </div>
 
-    <!-- City Dropdown (Initially empty, will be populated dynamically) -->
-    <label for="city">City:</label>
-    <select id="city" name="city" required>
-        <option value="" disabled selected>Select City</option>
-    </select><br/><br/>
+        <div id="volunteerSkills" class="form-group">
+            <select id="skills" name="skills">
+                <option value="" disabled selected>Select your primary skill</option>
+                <option value="teaching">Teaching</option>
+                <option value="mentoring">Mentoring</option>
+                <option value="counseling">Counseling</option>
+                <option value="medical">Medical Assistance</option>
+                <option value="translation">Translation</option>
+                <option value="technical">Technical Support</option>
+                <option value="administrative">Administrative Work</option>
+                <option value="social_media">Social Media Management</option>
+            </select>
+        </div>
 
-    <button type="submit">Add User</button>
-</form>
+        <button type="submit">Register</button>
+    </form>
+    <div class="login-link">
+        <p>Already have an account? <a th:href="@{/api/login}">Login</a></p>
+    </div>
+</div>
 
 <script>
-    // Function to update cities based on selected country
-    function updateCities() {
-        var countryId = document.getElementById('country').value;
-        var cityDropdown = document.getElementById('city');
-        
-        // Clear existing cities
-        cityDropdown.innerHTML = "<option value='' disabled selected>Select City</option>";
-        
-        if (countryId) {
-            // Make an AJAX request to the backend to fetch cities for the selected country
-            fetch('/users/cities?countryId=' + countryId)
-                .then(response => response.json())
-                .then(cities => {
-                    cities.forEach(city => {
-                        var option = document.createElement("option");
-                        option.value = city.addressId;
-                        option.text = city.name;
-                        cityDropdown.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error fetching cities:', error));  // Handle any errors
+        // Previous updateCities function remains the same
+        function updateCities() {
+            var countryId = document.getElementById('country').value;
+            var cityDropdown = document.getElementById('city');
+
+            // Clear existing cities
+            cityDropdown.innerHTML = "<option value='' disabled selected>Select City</option>";
+
+            if (countryId) {
+                // Make an AJAX request to the backend to fetch cities for the selected country
+                fetch('/users/cities?countryId=' + countryId)
+                    .then(response => response.json())
+                    .then(cities => {
+                        cities.forEach(city => {
+                            var option = document.createElement("option");
+                            option.value = city.addressId;
+                            option.text = city.name;
+                            cityDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching cities:', error));
+            }
         }
-    }
-</script>
+
+        function toggleVolunteerSkills() {
+            const volunteerCheckbox = document.getElementById('volunteer');
+            const skillsSection = document.getElementById('volunteerSkills');
+            const skillsSelect = document.getElementById('skills');
+
+            if (volunteerCheckbox.checked) {
+                skillsSection.classList.add('visible');
+                skillsSelect.required = true;
+            } else {
+                skillsSection.classList.remove('visible');
+                skillsSelect.required = false;
+                skillsSelect.value = '';
+            }
+        }
+
+        // Call toggleVolunteerSkills on page load to set initial state
+        document.addEventListener('DOMContentLoaded', toggleVolunteerSkills);
+    </script>
 </body>
 </html>
