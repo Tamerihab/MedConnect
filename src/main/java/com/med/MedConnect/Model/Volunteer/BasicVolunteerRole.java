@@ -1,4 +1,4 @@
-package com.med.MedConnect.Model.volunteer;
+package com.med.MedConnect.Model.Volunteer;
 
 import com.med.MedConnect.Model.Event.Event;
 import jakarta.persistence.*;

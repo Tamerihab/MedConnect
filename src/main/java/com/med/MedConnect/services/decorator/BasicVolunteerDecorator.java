@@ -1,6 +1,6 @@
 package com.med.MedConnect.services.decorator;
 
-import com.med.MedConnect.Model.volunteer.VolunteerRole;
+import com.med.MedConnect.Model.Volunteer.VolunteerRole;
 
 import java.util.List;
 

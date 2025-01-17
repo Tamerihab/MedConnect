@@ -1,4 +1,4 @@
-package com.med.MedConnect.Model.volunteer;
+package com.med.MedConnect.Model.Volunteer;
 
 import java.util.List;
 
