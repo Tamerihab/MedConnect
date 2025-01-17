@@ -54,16 +54,27 @@ package "Model" {
         +getResponsibilities()
     }
 
-    class HospitalAdmin implements IAccountManager {
+    class DonationAdmin implements IAccountManager {
         -hospitalID: int
         -hospitalName: String
-        -adminID: int
+        -donationadminID: int
         -address: Address
         +uploadRequiredItems(items: List<CompositeItem>)
         +manageItems(item: CompositeItem, action: String)
         +searchDonations(criteria: Map<String, String>): List<Donation>
         +filterDonations(filters: Map<String, String>): List<Donation>
     }
+
+    class EventAdmin implements IAccountManager {
+            -eventID: int
+            -eventName: String
+            -eventadminID: int
+            -address: Address
+            +addEvents(event: List<Events>)
+            +manageEvents(event: Event, action: String)
+            +searchEvents(criteria: Map<String, String>): List<Events>
+            +filterEvents(filters: Map<String, String>): List<Events>
+        }
 
     class Address {
         -address_id: int
@@ -82,12 +93,13 @@ package "Model" {
         -id: int
         -type: String
         -description: String
-        -quantity: int
+        -amount: int
         -state: DonationState
         -userId: int
         +setState(state: DonationState)
         +process()
     }
+
 
     class DonationDetails {
         -donationDetailsID: int
@@ -216,25 +228,22 @@ abstract class BaseView {
         +chooseLocation()
     }
 
-    class HospitalAdminDashboardView extends BaseView {
+    class DonationAdminDashboardView extends BaseView {
         +displayInventory()
         +showDonationRequests()
         +displayNotifications()
-
-
     }
+
+    class EventAdminDashboardView extends BaseView {
+            +displayEvents()
+            +displayNotifications()
+        }
 
     class LoginView extends BaseView {
         +showLoginForm()
         +displayError()
 
     }
-
-    class LoginView extends BaseView {
-        +showLoginForm()
-        +displayError()
-    }
-
 
     class DonationHistoryView extends BaseView {
         +displayDonationHistory()
@@ -326,6 +335,11 @@ package "Controller" {
         + saveMedical(Medicine medicine): Medicine
         + saveEquipment(Equipment equipment): Equipment
     }
+
+     class FilterController {
+            -filterStrategy: FilterStrategy
+            +filter(searchQuery)
+        }
 }
 
 package "Services" {
@@ -598,11 +612,32 @@ package "Services" {
         +notifyParticipants(): void
     }
 
-
-   interface IDonation
-   {
-
+interface Command {
+       List<?> execute();
    }
+
+   class SearchCommand implements Command {
+       - SearchProcessor searchProcessor
+       - String searchQuery
+       - SearchStrategy searchStrategy
+       + execute(): List<?>
+   }
+
+    class FilterCommand implements Command {
+        - FilterProcessor filterProcessor
+        - String filterQuery
+        + execute(): List<?>
+    }
+
+    class CommandInvoker {
+        + List<?> executeCommand(Command command)
+    }
+
+
+
+
+
+
 }
 
 
@@ -613,7 +648,8 @@ User -- Donation : Makes
 User *-- Payment : makes
 User -- DonationService : Uses
 BasicVolunteerRole -- Event : "0..*"
-HospitalAdmin -- Address : has
+DonationAdmin -- Address : has
+EventAdmin -- Address : has
 Address "0..*" --> "1" Address : Parent
 DonationService ..> Donation : Manages
 Donation --> Address
@@ -667,6 +703,8 @@ EventScheduler <|-- RecurringEventScheduler
 InAppNotification --> NotificationSender : sends
 SMSNotification --> NotificationSender : sends
 EmailNotification --> NotificationSender : sends
+SearchController --> CommandInvoker
+FilterController --> CommandInvoker
 
 
 ' Composite Pattern
@@ -679,6 +717,23 @@ CompositeIterator --> "1..*" ItemComponent
 ItemType <|-- Item
 Condition <|-- Medicine
 Condition <|-- Equipment
+
+
+' View
+
+DonorDashboardView --> DonationController
+DonationAdminDashboardView --> DonationController
+EventAdminDashboardView --> EventController
+LoginView --> LoginController
+DonationHistoryView --> DonationController
+EventView --> EventController
+RegistrationView --> UserController
+UserProfileView --> UserController
+VolunteerRegistrationView --> UserController
+SearchResultsView --> SearchController
+DonationAdminDashboardView --> UserController
+EventView --> EventController
+DonationView --> DonationController
 
 }
 
