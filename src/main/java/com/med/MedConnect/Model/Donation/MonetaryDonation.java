@@ -2,6 +2,7 @@ package com.med.MedConnect.Model.Donation;
 
 
 
+import com.med.MedConnect.Model.User.User;
 import jakarta.persistence.Entity;
 
 @Entity

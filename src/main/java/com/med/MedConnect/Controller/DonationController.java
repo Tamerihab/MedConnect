@@ -10,6 +10,7 @@ import com.med.MedConnect.Model.Donation.DonationType;
 import com.med.MedConnect.Model.Item.ItemRepo;
 import com.med.MedConnect.Model.User.User;
 import com.med.MedConnect.Model.User.UserRepo;
+import com.med.MedConnect.services.donation.DonationState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,14 +42,13 @@ public class DonationController {
     // Endpoint to handle monetary donations
     @PostMapping("/monetary")
     public MonetaryDonation saveMonetaryDonation(@RequestBody MonetaryDonation monetaryDonation) {
-        // You can get the user directly using userRepo
         User user = getUserById(monetaryDonation.getUser().getId());
         if (user != null) {
             monetaryDonation.setUser(user);  // Set the user to the donation
             monetaryDonation.setDonationType(DonationType.MONETARY);  // Set donation type
             return donationRepo.save(monetaryDonation);  // Save the monetary donation
         }
-        return null; // Handle case where user is not found
+        return null;
     }
 
 
@@ -56,7 +56,6 @@ public class DonationController {
     // Endpoint to handle medicine donations
     @PostMapping("/medicine")
     public Medicine saveMedicine(@RequestBody Medicine medicine) {
-        // Get the user from the request (assuming the userId is passed in the request body)
         User user = getUserById(medicine.getUser().getId());
         if (user != null) {
 
@@ -119,6 +118,19 @@ public class DonationController {
         }
         return null;  // Handle case where user is not found
     }
+    @PutMapping("/{donationId}/process")
+    public String processDonationState(@PathVariable int donationId) {
+        // Fetch the donation by ID
+        Donation donation = donationRepo.findById(donationId)
+                .orElseThrow(() -> new RuntimeException("Donation not found with id: " + donationId));
 
+        // Process the donation based on its current state
+        DonationState currentState = donation.getCurrentState();
+        currentState.handleDonation(donation);
 
+        // Save the updated state back to the database
+        donationRepo.save(donation);
+
+        return "Donation with ID " + donationId + " is now in state: " + donation.getCurrentState();
+    }
 }

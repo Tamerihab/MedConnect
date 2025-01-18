@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Donation List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Donation List</h1>
+<a href="/donations/add">Add New Donation</a>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Donor Name</th>
+        <th>Donation Amount</th>
+        <th>Donation Date</th>
+        <th>Donation Type</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="donation : ${donations}">
+        <td th:text="${donation.id}">1</td>
+        <td th:text="${donation.donorName}">John Doe</td>
+        <td th:text="${donation.amount}">100</td>
+        <td th:text="${donation.donationDate}">2025-01-01</td>
+        <td th:text="${donation.donationType}">Cash</td>
+        <td class="action-buttons">
+            <a th:href="@{/donations/{id}(id=${donation.id})}">View</a>
+            <a th:href="@{/donations/edit/{id}(id=${donation.id})}">Edit</a>
+            <a th:href="@{/donations/delete/{id}(id=${donation.id})}"
+               th:onclick="'return confirm(\'Are you sure you want to delete this donation?\')'">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

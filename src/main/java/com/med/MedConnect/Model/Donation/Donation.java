@@ -2,6 +2,10 @@ package com.med.MedConnect.Model.Donation;
 
 import com.med.MedConnect.Model.Item.Item;
 import com.med.MedConnect.Model.User.User;
+import com.med.MedConnect.services.donation.ApprovedState;
+import com.med.MedConnect.services.donation.DonationState;
+import com.med.MedConnect.services.donation.PendingState;
+import com.med.MedConnect.services.donation.RejectedState;
 import jakarta.persistence.*;
 
 @Entity
@@ -26,8 +30,17 @@ public class Donation {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Column(name = "donation_status")
+    @Enumerated(EnumType.STRING)
+    private DonationStateEnum donationStatus;
+
+    @Transient
+    private DonationState currentState;
+
     // Constructor
     public Donation() {
+        this.donationStatus = DonationStateEnum.PENDING; // Default state
+        this.currentState = new PendingState();
     }
 
     // Getters and Setters
@@ -62,5 +75,34 @@ public class Donation {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public DonationState getCurrentState() {
+        if (currentState == null) {
+            this.currentState = mapStateToClass(this.donationStatus);
+        }
+        return currentState;
+    }
+    // Function to set the state dynamically
+    public void setDonationState(DonationStateEnum newState) {
+        this.donationStatus = newState; // Update the enum representing the state
+        this.currentState = mapStateToClass(newState); // Map the new enum to the appropriate state class
+    }
+
+    public void handle() {
+        getCurrentState().handleDonation(this);
+    }
+
+    private DonationState mapStateToClass(DonationStateEnum stateEnum) {
+        switch (stateEnum) {
+            case PENDING:
+                return new PendingState();
+            case APPROVED:
+                return new ApprovedState();
+            case REJECTED:
+                return new RejectedState();
+            default:
+                throw new IllegalArgumentException("Unknown state: " + stateEnum);
+        }
     }
 }
